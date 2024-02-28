@@ -58,12 +58,16 @@ const script = new cloudflare.WorkerScript(APPNAME + DEMOFLAG, {
   accountId: accountId,
   name: APPNAME + DEMOFLAG,
   // Read the content of the worker from a file
+  // content: fs.readFileSync("../app/es-index.js", "utf8"),
+
   content: fs.readFileSync("../app/es-index.js", "utf8"),
   kvNamespaceBindings: [{
     name: "KV_NAMESPACE_BINDING", 
     namespaceId: namespace.id,
   }],
-  compatibilityFlags: ["nodejs_compat"],
+  module: true, // WIP
+  // compatibilityFlags: ["nodejs_compat"],
+  // compatibilityDate: "2024-02-27",
   // AI Bindings Not yet available.... 
 }, { protect: true }); 
 

@@ -1,4 +1,6 @@
+// @ts-ignore
 import { Ai } from './vendor/@cloudflare/ai.js';
+// @ts-ignore
 import { html } from './index.html';
 
 export default {
