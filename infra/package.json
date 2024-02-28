@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "@types/node": "^20.11.21"
+  },
+  "dependencies": {
+    "@pulumi/cloudflare": "^5.21.0",
+    "@pulumi/pulumi": "^3.107.0",
+    "csv-parser": "^3.0.0",
+    "typescript": "^4.9.5"
+  },
+  "name": "cloudflare-workers-ai",
+  "description": "A TypeScript program to deploy a serverless application on Cloudflare.",
+  "version": "1.0.0",
+  "main": "index.ts"
+}

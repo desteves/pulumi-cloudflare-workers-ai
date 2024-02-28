@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Workers AI Text-to-Image Sample App using Pulumi </title>
+    <style>
+        body {
+            text-align: center;
+            /* Center align the text and inline elements */
+        }
+
+        .image-container {
+            position: relative;
+            margin: 0 auto;
+            width: 1024px;
+            /* Set your desired container width */
+            height: 1024px;
+            /* Set your desired container height */
+        }
+
+        .overlay-image {
+            position: absolute;
+            width: 50%;
+            top: 50%;
+            /* Centered from the top */
+            left: 50%;
+            /* Centered from the left */
+            transform: translate(-50%, -50%);
+            /* Center the image */
+            z-index: 1;
+            /* This image will be on top */
+        }
+
+        .base-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 80%;
+            height: 80%;
+            z-index: 0;
+            /* This image will be behind the overlay image */
+        }
+    </style>
+</head>
+
+<body>
+    <h1> Cloudflare Workers AI + Pulumi Demo </h1>
+    <div class="image-container">
+        <img class="overlay-image" src="" alt="Marguee Sign">
+        <img class="base-image" src="" alt="AI Image">
+    </div>
+</body>
+
+</html>
