@@ -13,10 +13,9 @@ const config = new pulumi.Config();
 const accountId = config.require("accountId");
 const zoneId = config.require("zoneId");
 const domain = config.require("domain")
-export const testConfig = accountId + zoneId + domain + DEMOFLAG
+const aiToken = config.requireSecret("aiToken");
 ///////////////////////////////////////////////////////////////////
 // RUN pulumi up -y
-
 
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
@@ -37,7 +36,6 @@ const namespace = new cloudflare.WorkersKvNamespace(APPNAME + DEMOFLAG, {
 // RUN pulumi up -y
 // [Optional] OPEN https://dash.cloudflare.com/24725f46259aa3c2a1d7810649cd7428/workers/kv/namespaces 
 
-
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 // Step 3 -  //////////////////////////////////////////////////////
@@ -49,7 +47,6 @@ populateWorkersKv(namespace.id, accountId)
 // RUN pulumi up -y
 // [Optional] OPEN https://dash.cloudflare.com/24725f46259aa3c2a1d7810649cd7428/workers/kv/namespaces 
 
-
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 // Step 4 -  //////////////////////////////////////////////////////
@@ -57,26 +54,37 @@ populateWorkersKv(namespace.id, accountId)
 const script = new cloudflare.WorkerScript(APPNAME + DEMOFLAG, {
   accountId: accountId,
   name: APPNAME + DEMOFLAG,
-  // Read the content of the worker from a file
-  // content: fs.readFileSync("../app/es-index.js", "utf8"),
-
-  content: fs.readFileSync("../app/es-index.js", "utf8"),
+  content: fs.readFileSync("../app/index.js", "utf8"),
   kvNamespaceBindings: [{
-    name: "KV_NAMESPACE_BINDING", 
+    name: "KV_NAMESPACE_BINDING",
     namespaceId: namespace.id,
   }],
-  module: true, // WIP
+  module: true, // ES6 module
   // compatibilityFlags: ["nodejs_compat"],
-  // compatibilityDate: "2024-02-27",
+  compatibilityDate: "2024-02-28",
+
   // AI Bindings Not yet available.... 
-}, { protect: true }); 
+  // workaround in the meantime
+  secretTextBindings: [{
+    name: "CF_ACCT_ID",
+    text: accountId,
+  },
+  {
+    name: "CF_ACCT_TOKEN",
+    text: aiToken,
+  }],
+  plainTextBindings: [{
+    name: "T2IMODEL",
+    text: "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+}],
+
+}, { protect: true });
 
 ///////////////////////////////////////////////////////////////////
 // EDIT app/worker.ts to use a random KV entry
 // RUN pulumi up -y
 // [Optional] OPEN https://dash.cloudflare.com/24725f46259aa3c2a1d7810649cd7428/workers-and-pages
 // Note, no route...yet!
-
 
 ///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
@@ -112,14 +120,6 @@ const record = new cloudflare.Record(APPNAME + DEMOFLAG, {
 
 
 ///////////////////////   END OF DEMO    /////////////////////////
-
-
-
-///////////////////////    DANGER ZONE    /////////////////////////
-///////////////////////    DANGER ZONE    /////////////////////////
-///////////////////////    DANGER ZONE    /////////////////////////
-///////////////////////    DANGER ZONE    /////////////////////////
-///////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 // Step 7 -  //////////////////////////////////////////////////////
 // A Caching Rule to avoid caching. TODO - fix (?) 
