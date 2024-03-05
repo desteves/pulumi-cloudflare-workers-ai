@@ -1,5 +1,0 @@
-/bin/
-**node_modules/
-package-lock.json
-Pulumi.dev.yaml
-elarroyo.csv

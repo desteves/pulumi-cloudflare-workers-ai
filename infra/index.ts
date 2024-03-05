@@ -25,6 +25,7 @@ const namespace = new cloudflare.WorkersKvNamespace(APPNAME + DEMOFLAG, {
   accountId: accountId,
   title: APPNAME + DEMOFLAG,
 });
+
 // A sample entry to the Key Value Namespace
 // const kv = new cloudflare.WorkersKv("elarroyo-test" + DEMOFLAG, {
 //   accountId: accountId,
@@ -54,7 +55,7 @@ populateWorkersKv(namespace.id, accountId)
 const script = new cloudflare.WorkerScript(APPNAME + DEMOFLAG, {
   accountId: accountId,
   name: APPNAME + DEMOFLAG,
-  content: fs.readFileSync("../app/index.js", "utf8"),
+  content: fs.readFileSync("../app/dist/bundle.js", "utf8"),
   kvNamespaceBindings: [{
     name: "KV_NAMESPACE_BINDING",
     namespaceId: namespace.id,
@@ -62,6 +63,7 @@ const script = new cloudflare.WorkerScript(APPNAME + DEMOFLAG, {
   module: true, // ES6 module
   // compatibilityFlags: ["nodejs_compat"],
   compatibilityDate: "2024-02-28",
+
 
   // AI Bindings Not yet available.... 
   // workaround in the meantime
@@ -73,11 +75,24 @@ const script = new cloudflare.WorkerScript(APPNAME + DEMOFLAG, {
     name: "CF_ACCT_TOKEN",
     text: aiToken,
   }],
-  plainTextBindings: [{
-    name: "T2IMODEL",
-    text: "@cf/stabilityai/stable-diffusion-xl-base-1.0",
-}],
-
+  plainTextBindings: [
+    {
+      name: "T2IMODEL",
+      text: "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+    }, {
+      name: "MODEL-TEXT-TO-IMAGE",
+      text: "@cf/bytedance/stable-diffusion-xl-lightning",
+    },
+    {
+      // https://developers.cloudflare.com/workers-ai/models/llamaguard-7b-awq/
+      name: "MODEL-TEXT-GUARD",
+      text: "@hf/thebloke/llamaguard-7b-awq",
+    },
+    {
+      // https://developers.cloudflare.com/workers-ai/models/whisper/
+      name: "MODEL-AUDIO-TO-TEXT",
+      text: "@cf/openai/whisper",
+    }],
 }, { protect: true });
 
 ///////////////////////////////////////////////////////////////////

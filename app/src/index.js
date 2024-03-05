@@ -3,6 +3,8 @@
 // @ts-ignore
 // import { Ai } from './vendor/@cloudflare/ai.js';
 
+import html from '../public/index.html';
+
 export default {
     async fetch(request, environment, context) {
 
@@ -55,6 +57,7 @@ export default {
             const base64String = manualBtoa(binaryString);
             return base64String;
         };
+        
         /////////////////////////////////////////////////
         // Run the AI model via Bindings, not yet available programmatically
         // requires AI Binding, must be manually added 
@@ -72,7 +75,6 @@ export default {
 
         /////////////////////////////////////////////////
         // Temporary way to use the AI models via the API Endpoint
-
         // Use available model
         //'@cf/stabilityai/stable-diffusion-xl-base-1.0',
         // Model not yet available 
@@ -91,13 +93,13 @@ export default {
             },
             body: JSON.stringify({
                 prompt: value,
-                num_steps: 1, // temp bug fix workaround
+                num_steps: 1, 
             }
             ),
         };
         const response = await fetch(url, fetchOptions);
         const binary = await response.arrayBuffer();
-        const bg = "data:image/png;base64," +  uint8ArrayToBase64(new Uint8Array(binary));
+        const bg = "data:image/png;base64," + uint8ArrayToBase64(new Uint8Array(binary));
         /////////////////////////////////////////////////
 
         class ImageSrcRewriter {
@@ -111,64 +113,7 @@ export default {
                 }
             }
         }
-
-        let html =  `
-        <!DOCTYPE html>
-<html>
-
-<head>
-    <title> Workers AI Text-to-Image Sample App using Pulumi </title>
-    <style>
-        body {
-            text-align: center;
-            /* Center align the text and inline elements */
-        }
-
-        .image-container {
-            position: relative;
-            margin: 0 auto;
-            width: 1024px;
-            /* Set your desired container width */
-            height: 1024px;
-            /* Set your desired container height */
-        }
-
-        .overlay-image {
-            position: absolute;
-            width: 50%;
-            top: 50%;
-            /* Centered from the top */
-            left: 50%;
-            /* Centered from the left */
-            transform: translate(-50%, -50%);
-            /* Center the image */
-            z-index: 1;
-            /* This image will be on top */
-        }
-
-        .base-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 80%;
-            height: 80%;
-            z-index: 0;
-            /* This image will be behind the overlay image */
-        }
-    </style>
-</head>
-
-<body>
-    <h1> Cloudflare Workers AI + Pulumi Demo </h1>
-    <div class="image-container">
-        <img class="overlay-image" src="" alt="Marguee Sign">
-        <img class="base-image" src="" alt="AI Image">
-    </div>
-</body>
-
-</html>
-        `;
-                return new HTMLRewriter()
+        return new HTMLRewriter()
             .on("img", new ImageSrcRewriter())
             .transform(new Response(html, {
                 status: 200,
