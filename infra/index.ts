@@ -55,7 +55,7 @@ populateWorkersKv(namespace.id, accountId)
 const script = new cloudflare.WorkerScript(APPNAME + DEMOFLAG, {
   accountId: accountId,
   name: APPNAME + DEMOFLAG,
-  content: fs.readFileSync("../app/dist/bundle.js", "utf8"),
+  content: fs.readFileSync("../app/dist/bundle.mjs", "utf8"),
   kvNamespaceBindings: [{
     name: "KV_NAMESPACE_BINDING",
     namespaceId: namespace.id,
@@ -76,21 +76,22 @@ const script = new cloudflare.WorkerScript(APPNAME + DEMOFLAG, {
     text: aiToken,
   }],
   plainTextBindings: [
+    // {
+    //   name: "T2IMODEL",
+    //   text: "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+    // }, 
     {
-      name: "T2IMODEL",
-      text: "@cf/stabilityai/stable-diffusion-xl-base-1.0",
-    }, {
-      name: "MODEL-TEXT-TO-IMAGE",
+      name: "MODEL_TEXT_TO_IMAGE",
       text: "@cf/bytedance/stable-diffusion-xl-lightning",
     },
     {
       // https://developers.cloudflare.com/workers-ai/models/llamaguard-7b-awq/
-      name: "MODEL-TEXT-GUARD",
+      name: "MODEL_TEXT_GUARD",
       text: "@hf/thebloke/llamaguard-7b-awq",
     },
     {
       // https://developers.cloudflare.com/workers-ai/models/whisper/
-      name: "MODEL-AUDIO-TO-TEXT",
+      name: "MODEL_AUDIO_TO_TEXT",
       text: "@cf/openai/whisper",
     }],
 }, { protect: true });

@@ -4,6 +4,7 @@ import fs from 'fs';
 import csvParser from 'csv-parser';
 
 const csv = '../data/sample.csv';
+
 export function populateWorkersKv(nsId: pulumi.Output<string>, aId: string) {
     // Loopy loops and lollipops
     fs.createReadStream(csv)

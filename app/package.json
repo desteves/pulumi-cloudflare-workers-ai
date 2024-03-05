@@ -3,7 +3,7 @@
     "esbuild": "0.20.1"
   },
   "scripts": {
-    "build": "esbuild --bundle --outfile=./dist/bundle.js --loader:.html=text ./src/index.js --platform=node --minify --format=esm"
+    "build": "esbuild --bundle --outfile=./dist/bundle.mjs --loader:.html=text --loader:.jpg=file ./src/display.js --platform=node --minify --format=esm"
   },
   "dependencies": {
     "@cloudflare/ai": "^1.0.53"
