@@ -67,6 +67,7 @@ const script = new cloudflare.WorkerScript(APPNAME + DEMOFLAG, {
 
   // AI Bindings Not yet available.... 
   // workaround in the meantime
+  
   secretTextBindings: [{
     name: "CF_ACCT_ID",
     text: accountId,
@@ -75,11 +76,9 @@ const script = new cloudflare.WorkerScript(APPNAME + DEMOFLAG, {
     name: "CF_ACCT_TOKEN",
     text: aiToken,
   }],
+
+
   plainTextBindings: [
-    // {
-    //   name: "T2IMODEL",
-    //   text: "@cf/stabilityai/stable-diffusion-xl-base-1.0",
-    // }, 
     {
       name: "MODEL_TEXT_TO_IMAGE",
       text: "@cf/bytedance/stable-diffusion-xl-lightning",

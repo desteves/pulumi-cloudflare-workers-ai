@@ -90,7 +90,6 @@ export default {
             },
             body: JSON.stringify({
                 prompt: quote,
-                // num_steps: 1,
             }
             ),
         };
