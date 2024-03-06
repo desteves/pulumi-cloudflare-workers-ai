@@ -67,7 +67,7 @@ const script = new cloudflare.WorkerScript(APPNAME + DEMOFLAG, {
 
   // AI Bindings Not yet available.... 
   // workaround in the meantime
-  
+
   secretTextBindings: [{
     name: "CF_ACCT_ID",
     text: accountId,
@@ -133,22 +133,21 @@ const record = new cloudflare.Record(APPNAME + DEMOFLAG, {
 // [Optional] OPEN https://dash.cloudflare.com/24725f46259aa3c2a1d7810649cd7428/atxyall.com/dns/records
 
 
-
 ///////////////////////   END OF DEMO    /////////////////////////
 ///////////////////////////////////////////////////////////////////
 // Step 7 -  //////////////////////////////////////////////////////
-// A Caching Rule to avoid caching. TODO - fix (?) 
+// A Caching Rule to avoid caching. 
 // Caching itself will still depend on the cache-control header 
-// const caching = new cloudflare.Ruleset("elarroyo-rule" + DEMOFLAG, {
+// const caching = new cloudflare.Ruleset(APPNAME + DEMOFLAG, {
 //   zoneId: zoneId,
-//   name: "elarroyo-rule" + DEMOFLAG,
+//   name: 'default', //APPNAME + DEMOFLAG,
 //   description: "Avoid caching",
 //   kind: "zone",
 //   phase: "http_request_cache_settings",
 //   rules: [{
 //     action: "set_cache_settings",
 //     actionParameters: {
-//       // cache: false,
+//       cache: false,
 //       edgeTtl:
 //       {
 //         mode: "bypass_by_default",
@@ -157,9 +156,8 @@ const record = new cloudflare.Record(APPNAME + DEMOFLAG, {
 //         mode: "bypass",
 //       },
 //     },
-//     expression: "(http.request.full_uri contains \"" + DEMOFLAG + "\")",
+//     expression: "(http.request.full_uri contains \"" + APPNAME + DEMOFLAG + "\")",
 //     description: "Set cache settings and custom cache key for " + route.pattern,
 //     enabled: true
 //   }]
 // })
-

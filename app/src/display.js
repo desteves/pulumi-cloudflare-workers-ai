@@ -63,7 +63,7 @@ export default {
         //     prompt: value
         // };
         // const aiimg = await ai.run(
-        //     '@cf/bytedance/stable-diffusion-xl-lightning',
+        //     environment.MODEL_TEXT_TO_IMAGE,
         //     inputs
         // );
         // const bg = "data:image/png;base64," + uint8ArrayToBase64(aiimg);
@@ -80,7 +80,7 @@ export default {
         const url = "https://gateway.ai.cloudflare.com/v1/" +
             environment.CF_ACCT_ID +
             "/ai/workers-ai/" +
-            environment.MODEL_TEXT_TO_IMAGE; // fast
+            environment.MODEL_TEXT_TO_IMAGE;
 
         const fetchOptions = {
             method: 'POST',
@@ -114,6 +114,7 @@ export default {
                 headers: {
                     "content-type": "text/html;charset=UTF-8",
                     "Cache-Control": "s-maxage=0",
+                    'Expires': new Date().toUTCString()
                 },
             }))
 
