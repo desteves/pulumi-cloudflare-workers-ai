@@ -1,0 +1,11 @@
+name = "worker"
+main = "src/index.ts"
+compatibility_date = "2024-03-11"
+minify = true
+
+kv_namespaces = [
+  { binding = "KV", id = "386343a6d24845a89a3aed7502bfaa98", preview_id = "386343a6d24845a89a3aed7502bfaa98" }
+]
+
+[ai]
+binding = "AI"
