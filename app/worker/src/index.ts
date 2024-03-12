@@ -8,17 +8,16 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+
 import { Ai } from "@cloudflare/ai";
+// @ts-ignore
 import html from '../public/index.html';
+// @ts-ignore
+import favicon from '../public/favicon.ico';
 
 export interface Env {
-	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
 	KV: KVNamespace;
-	// AI: AIBinding;
-
-	// Example binding to a Service. Learn more at https://developers.cloudflare.com/workers/runtime-apis/service-bindings/
-	// MY_SERVICE: Fetcher;
-
+	AI: any;
 }
 
 export default {
@@ -30,70 +29,24 @@ export default {
 		const key = (Math.floor(Math.random() * parseInt(count)) + 1).toString();
 		const quote = await env.KV.get(key) || "No quote found.";
 
-
-		/////////////////////////////////////////////////
-		// (helper function) Convert a Uint8Array to a base64 string
-		function manualBtoa(input: string) {
-			const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-			let output = '';
-			let i = 0;
-
-			const pad = input.length % 3;
-			const length = input.length - pad;
-
-			// Process each 24-bit chunk
-			for (; i < length; i += 3) {
-				const chunk = (input.charCodeAt(i) << 16) + (input.charCodeAt(i + 1) << 8) + input.charCodeAt(i + 2);
-				output += chars[(chunk >> 18) & 0x3F] + chars[(chunk >> 12) & 0x3F] + chars[(chunk >> 6) & 0x3F] + chars[chunk & 0x3F];
-			}
-
-			// Padding
-			if (pad) {
-				let chunk = input.charCodeAt(i) << 16;
-				if (pad === 2) chunk += input.charCodeAt(i + 1) << 8;
-
-				output += chars[(chunk >> 18) & 0x3F] + chars[(chunk >> 12) & 0x3F];
-				output += pad === 2 ? chars[(chunk >> 6) & 0x3F] : '=';
-				output += '=';
-			}
-
-			return output;
-		};
-		/////////////////////////////////////////////////
-		// (helper function)
-		function uint8ArrayToBase64(uint8Array: Uint8Array) {
-			// Convert the Uint8Array to a binary string
-			let binaryString = '';
-			for (let i = 0; i < uint8Array.length; i++) {
-				binaryString += String.fromCharCode(uint8Array[i]);
-				console.log(binaryString)
-			}
-
-			// Convert the binary string to Base64
-			const base64String = manualBtoa(binaryString);
-			return base64String;
-		};
-
 		/////////////////////////////////////////////////
 		// 2. Run the AI model via Bindings to the AI Service
-		// @ts-ignore
 		const ai = new Ai(env.AI);
-		const img = await ai.run(
+		const result = await ai.run(
 			"@cf/bytedance/stable-diffusion-xl-lightning",
 			{
-				prompt: quote
+				prompt: quote,
+				num_steps: 1,
 			}
+		).then((stream) =>
+			new Response(stream, { headers: { "Content-Type": "image/png" } }).arrayBuffer(),
 		);
-		console.log(img);
-		const bg = "data:image/png;base64," + uint8ArrayToBase64(img);
-		// const r = new Response(img, {
-		// 	headers: {
-		// 		"content-type": "image/png",
-		// 	},
-		// });
-		// const bg  = await r.text();
-		// const bg = new ImageDecoder({ data: resp, type: "image/png" });
-
+		console.log(result);
+		const bg = "data:image/png;base64," + btoa(
+			new Uint8Array(result)
+				.reduce((data, byte) => data + String.fromCharCode(byte), '')
+		);
+		console.log(bg);
 		/////////////////////////////////////////////////
 		// 3. Display the quote + generated image
 		// https://developers.cloudflare.com/workers/runtime-apis/html-rewriter/#properties

@@ -1,10 +1,10 @@
-name = "worker"
+name = "tmp-worker"
 main = "src/index.ts"
 compatibility_date = "2024-03-11"
 minify = true
 
 kv_namespaces = [
-  { binding = "KV", id = "386343a6d24845a89a3aed7502bfaa98", preview_id = "386343a6d24845a89a3aed7502bfaa98" }
+  { binding = "KV", id = "ac8c25f7b58f46aab78361ce41026b63", preview_id= "ac8c25f7b58f46aab78361ce41026b63" }
 ]
 
 [ai]
