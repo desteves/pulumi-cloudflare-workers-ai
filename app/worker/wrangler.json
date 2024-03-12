@@ -1,1 +1,1 @@
-{"name":"quote-demo","main":"src/index.ts","minify":true,"compatibility_date":"2024-03-12","ai":{"binding":"AI"},"kv_namespaces":[{"binding":"KV","id":"ac8c25f7b58f46aab78361ce41026b63"}]}
+{"name":"quote-demo","main":"src/index.ts","minify":true,"compatibility_date":"2024-03-12","ai":{"binding":"AI"},"kv_namespaces":[{"binding":"KV","id":"ac8c25f7b58f46aab78361ce41026b63"}],"workers_dev":false,"route":{"pattern":"quote-demo.atxyall.com","custom_domain":true}}

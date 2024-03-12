@@ -5,6 +5,7 @@ import csvParser from 'csv-parser';
 
 const csv = '../data/sample.csv';
 
+let count = 0;
 export function populateWorkersKv(nsId: pulumi.Output<string>, aId: string) {
     // Loopy loops and lollipops
     fs.createReadStream(csv)
@@ -17,6 +18,7 @@ export function populateWorkersKv(nsId: pulumi.Output<string>, aId: string) {
                 key: data.Id,
                 value: data.Text,
             });
+            count++;
         })
         .on('error', (error) => {
             console.error('Error reading CSV file:', error);
