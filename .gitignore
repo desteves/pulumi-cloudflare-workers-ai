@@ -1,3 +1,6 @@
 **el**.csv
 **node_modules
-**dist/
+**dist
+**.wrangler
+**multi-worker
+RECYCLE_BIN
