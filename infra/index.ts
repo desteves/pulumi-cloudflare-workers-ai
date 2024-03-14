@@ -16,8 +16,8 @@ const resourceName = APPNAME + DEMOFLAG;
 // Check needed environment variables are set up
 const config = new pulumi.Config();
 const accountId = config.require("accountId");
-const zoneId = config.require("zoneId");
-const domain = config.require("domain");
+// const zoneId = config.require("zoneId");
+// const domain = config.require("domain");
 ///////////////////////////////////////////////////////////////////
 // RUN pulumi up -y
 // (No infra just yet, but it will check the environment variables are set up correctly.)
