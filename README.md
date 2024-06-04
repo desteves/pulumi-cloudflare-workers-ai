@@ -4,3 +4,5 @@ The app displays a random quote and a text-to-image AI background representative
 
 ![Screenshot](./docs/images/hero.png)
 
+- [App code](./app/)
+- [Deployment code](./infra/)

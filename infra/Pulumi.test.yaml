@@ -1,9 +1,0 @@
-# environment: 
-# - pulumi-cloudflare-workers-ai
-
-config:
-  cloudflare-workers-ai:accountId: 24725f46259aa3c2a1d7810649cd7428
-  cloudflare-workers-ai:domain: atxyall.com
-  cloudflare-workers-ai:zoneId: 10417f0f3cdfae4db9c951209933f4e0
-  cloudflare:apiToken:
-    secure: AAABAK91iMLTvdMsp6RXtfnXdUQUgReIPaWJunU2QtW4huL/wcTSWvYUx9137RrUFc/ssQ02GGUvuI0BPPvnvOFC4dYZ0q/M

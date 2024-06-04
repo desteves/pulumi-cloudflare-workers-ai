@@ -1,7 +1,0 @@
-name: cloudflare-workers-ai
-runtime: nodejs
-description: A TypeScript program to deploy a serverless application on Cloudflare.
-config:
-  pulumi:tags:
-    value:
-      pulumi:template: https://github.com/pulumi/tutorials/tree/cloudflare-typescript-hello-world-end
