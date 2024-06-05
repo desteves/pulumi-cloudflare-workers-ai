@@ -2,5 +2,5 @@
 **node_modules
 **dist
 **.wrangler
-**multi-worker
 RECYCLE_BIN
+**.logapp/deploy.log

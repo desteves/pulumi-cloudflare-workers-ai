@@ -1,0 +1,15 @@
+{
+  "name": "quote",
+  "main": "./src/worker.ts",
+  "minify": true,
+  "ai": {"binding": "AI"},
+  "kv_namespaces": [{
+    "binding": "KV",
+    "id": "f27b40e29cee49eab03b9c8046c5615a"
+  }],
+  "workers_dev": false,
+  "route": {
+    "pattern": "quote.atxyall.com",
+    "custom_domain": true
+  }
+}

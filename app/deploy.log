@@ -1,0 +1,16 @@
+ ⛅️ wrangler 3.59.0
+-------------------
+Total Upload: 2.68 KiB / gzip: 1.23 KiB
+Your worker has access to the following bindings:
+- KV Namespaces:
+  - KV: f27b40e29cee49eab03b9c8046c5615a
+- AI:
+  - Name: AI
+Uploaded quote (1.55 sec)
+Published quote (1.18 sec)
+  quote.atxyall.com (custom domain)
+Current Deployment ID: 9277a0f9-228b-4ab1-b4a2-b5b06d38900a
+Current Version ID: 9277a0f9-228b-4ab1-b4a2-b5b06d38900a
+
+
+Note: Deployment ID has been renamed to Version ID. Deployment ID is present to maintain compatibility with the previous behavior of this command. This output will change in a future version of Wrangler. To learn more visit: https://developers.cloudflare.com/workers/configuration/versions-and-deployments
