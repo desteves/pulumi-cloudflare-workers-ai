@@ -2,7 +2,5 @@
 **node_modules
 **dist
 **.wrangler
-**multi-worker
 RECYCLE_BIN
-app/worker-t**
-infra-ty**
+**.log

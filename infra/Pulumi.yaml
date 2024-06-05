@@ -1,0 +1,3 @@
+name: cloudflare-workers-ai
+runtime: nodejs
+description: A TypeScript program to deploy a serverless application on Cloudflare.
