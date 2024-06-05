@@ -18,13 +18,12 @@ export interface WranglerConfigArgs {
 // Calls the makefile to create the Worker script
 export class WranglerConfig extends pulumi.ComponentResource {
 
-    // public url: pulumi.Output<string>;
-    public globs: pulumi.Output<local.RunResult>;
+    public readonly triggerFiles: pulumi.Output<local.RunResult>;
 
     constructor(name: string, args: WranglerConfigArgs, opts?: pulumi.ComponentResourceOptions) {
         super("cloudflare:WorkerScript:WranglerConfig", name, args, opts);
 
-        this.globs = local.runOutput({
+        this.triggerFiles = local.runOutput({
             dir: "../app/",
             command: "cat Makefile",
             assetPaths: ["Makefile", "src/**", "public/**"],
@@ -40,10 +39,10 @@ export class WranglerConfig extends pulumi.ComponentResource {
                 "KV_ID": args.kvId,
                 "CLOUDFLARE_ACCOUNT_ID": args.accountId,
                 "CLOUDFLARE_API_TOKEN": cloudflare.config.apiToken,
-                // "RANDOM": Math.random().toString(), // Forces a change
+                // "RANDOM": Math.random().toString(), // Forces a replaceOnChanges trigger
             },
             assetPaths: ["Makefile", "wrangler.json", "deploy.log"],
-            triggers: [this.globs],
+            triggers: [this.triggerFiles],
         },
             {
                 parent: this,

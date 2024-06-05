@@ -11,7 +11,7 @@
  */
 
 // @ts-ignore
-import  html from '../public/index.html';
+import html from '../public/index.html';
 import { KVNamespace, Request, ExecutionContext, Element } from '@cloudflare/workers-types';
 
 export interface Env {
@@ -19,7 +19,7 @@ export interface Env {
 	// If you set another name in wrangler.toml as the value for 'binding',
 	// replace "AI" with the variable name you defined.
 	AI: any;
-  }
+}
 
 // This is the entry point for the Worker script
 export default {
@@ -32,20 +32,24 @@ export default {
 		const defaultQuote = "What's a purple platypus's favorite ride? An orange cloud, of course!";
 		const count = env?.KV ? await env.KV.get("count") ?? "0" : "0";
 		const key = (Math.floor(Math.random() * parseInt(count)) + 1).toString();
-		const quote = env?.KV ? await env.KV.get(key)?? defaultQuote: defaultQuote
+		const quote = env?.KV ? await env.KV.get(key) ?? defaultQuote : defaultQuote
+
+
 		///////////////////////////////////////////////////////////////////////
 		// 2. Run the AI model via Bindings to the AI Service
 		///////////////////////////////////////////////////////////////////////
 		const result = await env.AI.run("@cf/bytedance/stable-diffusion-xl-lightning", {
 			// @ts-ignore
-			prompt: quote }).then((stream) =>
-				new Response(stream, { headers: { "Content-Type": "image/png" } }).arrayBuffer(),
+			prompt: quote
+		}).then((stream) =>
+			new Response(stream, { headers: { "Content-Type": "image/png" } }).arrayBuffer(),
 		);
 		const bg = "data:image/png;base64," + btoa(
 			new Uint8Array(result)
 				.reduce((data, byte) => data + String.fromCharCode(byte), '')
 		);
 		
+
 		///////////////////////////////////////////////////////////////////////
 		// 3. Display the quote + generated image
 		///////////////////////////////////////////////////////////////////////
