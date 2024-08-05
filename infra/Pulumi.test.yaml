@@ -1,0 +1,3 @@
+
+environment: 
+- pulumi-cloudflare-workers-ai
