@@ -8,7 +8,6 @@ const csv = '../data/sample.csv';
 
 let count = 0;
 export function populateWorkersKv(nsId: pulumi.Output<string>, aId: string) {
-    // Loopy loops and lollipops
     fs.createReadStream(csv)
         .pipe(csvParser())
         .on('data', (data) => {

@@ -1,4 +1,4 @@
-# Pulumi-deployed Cloudflare Workers AI serverless app
+# Cloudflare Workers AI Demo
 
 The app displays a random quote and a text-to-image AI background representative of such.
 

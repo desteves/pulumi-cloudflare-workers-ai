@@ -3,4 +3,7 @@
 **dist
 **.wrangler
 RECYCLE_BIN
-**.logapp/deploy.log
+**/**.log
+app/deploy.log
+**/bin
+data/prod.csv
