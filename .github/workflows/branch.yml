@@ -1,0 +1,53 @@
+name: branch
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+jobs:
+  pulumi-preview:
+    name: pulumi-preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+      
+      # Best practice: use a short-lived to auth to Pulumi Cloud
+      # The OIDC Issuer must be properly configured in the Pulumi Organization
+      # For more information, see 
+      # https://www.pulumi.com/docs/pulumi-cloud/oidc/client/github/
+      - name: setup short-lived token
+        uses: pulumi/auth-actions@v1
+        with:
+          organization: pulumi-sandbox-diana
+          requested-token-type: urn:pulumi:token-type:access_token:organization
+  
+      - name: set up node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install app deps
+        working-directory: ./app
+        run: npm install
+        # TODO -- need to build?
+      
+      - name: install infra deps
+        working-directory: ./infra
+        run: npm install
+
+      - name: preview resources
+        uses: pulumi/actions@v5
+        with:
+          command: preview
+          stack-name: pulumi-sandbox-diana/cloudflare-workers-ai/prod
+          work-dir: ./infra
+          comment-on-pr: true
+          comment-on-summary: true
+          edit-pr-comment: true
