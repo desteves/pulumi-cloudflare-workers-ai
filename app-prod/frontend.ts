@@ -7,25 +7,27 @@ export default {
   // The fetch event handler for the Worker script
   async fetch(request, env, ctx) {
 
-    ///////////////////////////////////////////////////////////////////////
-    // 3. Display the quote + generated image
-    ///////////////////////////////////////////////////////////////////////
-
     const quote = await env.WORKER_DB_SERVICE.fetch(request).then((response) => response.text());
 
-    // TODO -- add the quote
-    // const quoteRequest = new Request(request, {
-    //   query: {
-    //     prompt: encodeQueryParam(quote),
-    // });
-    // const requestOptions = {
-    //   method: "POST",
-    //   body: raw,
+    const url = new URL(request.url);
+    url.pathname = "/ai/"
+    url.searchParams.set('prompt', encodeURIComponent(quote));
+    // Create a new Request object with the modified URL
+    const modifiedRequest = new Request(url.toString(), {
+      method: request.method,
+      headers: request.headers,
+      redirect: 'follow'
+    });
+    const response = await env.WORKER_AI_SERVICE.fetch(modifiedRequest);
+    const arrayBuffer = await response.arrayBuffer();
+    // Convert ArrayBuffer to base64 string
+    const base64String = btoa(
+      new Uint8Array(arrayBuffer)
+        .reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
 
-    //   redirect: "follow"
-    // };
-
-    const bg = await env.WORKER_AI_SERVICE.fetch(request) // WIP
+    // Create a data URL
+    const dataUrl = `data:${response.headers.get('content-type')};base64,${base64String}`;
     const html = `<!DOCTYPE html>
 <html>
 
@@ -90,7 +92,7 @@ export default {
     <h1> Serverless AI on Cloudflare Workers AI deployed with Pulumi </h1>
     <div class="image-container">
         <img class="overlay-image" src="https://i.imgur.com/CypWQYk.jpg" alt="Marguee Sign">
-        <img id="base-image" class="base-image" src="${bg}" alt="AI Image">
+        <img id="base-image" class="base-image" src="${dataUrl}" alt="AI Image">
         <p class='overlay-text'>${quote}</p>
     </div>
 </body>

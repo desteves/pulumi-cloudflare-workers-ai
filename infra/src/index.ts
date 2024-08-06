@@ -120,6 +120,8 @@ const frontendWorker = new cloudflare.WorkerScript(resourceName, {
   name: resourceName,
   accountId: accountId,
   content: fs.readFileSync("../app-prod/frontend.ts", "utf8"),
+  module: true, // ES6 module
+  compatibilityDate: "2024-07-04",
   serviceBindings: [{
     name: "WORKER_AI_SERVICE",
     service: aiWorker.name
