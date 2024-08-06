@@ -25,13 +25,4 @@ export function populateDatabase(nsId: pulumi.Output<string>, aId: string) {
         .on('error', (error) => {
             console.error('Error reading CSV file:', error);
         });
-
-    if (count > 0) {
-        new cloudflare.WorkersKv("count", {
-            accountId: aId,
-            namespaceId: nsId,
-            key: "count",
-            value: count.toString(),
-        });
-    }
 }
