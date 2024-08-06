@@ -16,6 +16,8 @@ import {  Request, ExecutionContext, Element } from '@cloudflare/workers-types';
 
 export interface Env {
 
+  WORKER_DB_SERVICE: any;
+  WORKER_AI_SERVICE: any;
 }
 
 // This is the entry point for the Worker script
@@ -24,7 +26,17 @@ export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 
 		
-		const bg = await env.WORKER_AI_SERVICE.fetch(request);
+    const quote = await env.WORKER_DB_SERVICE.fetch(request);
+    
+    // TODO -- add the quote
+    const quoteRequest = new Request(request, {
+      method: 'POST', // For example, change method to POST
+      headers: new Headers({
+        ...request.headers,
+      }),
+      body: quote 
+    });
+		const bg = await env.WORKER_AI_SERVICE.fetch(quoteRequest);
 
 		///////////////////////////////////////////////////////////////////////
 		// 3. Display the quote + generated image

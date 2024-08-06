@@ -3,16 +3,18 @@ import * as pulumi from "@pulumi/pulumi";
 import fs from 'fs';
 import csvParser from 'csv-parser';
 
-// Yes, if the CSV file changes, on the next pulumi up, the Workers KV will be updated accordingly
-const csv = '../data/sample.csv';
+// Yes, if the CSV file changes, 
+// on the next pulumi up, 
+// the Workers KV will be updated accordingly
+const csv = (pulumi.getStack() === "prod") ? '../data/prod.csv' : '../data/sample.csv';
 
 let count = 0;
-export function populateWorkersKv(nsId: pulumi.Output<string>, aId: string) {
+export function populateDatabase(nsId: pulumi.Output<string>, aId: string) {
     fs.createReadStream(csv)
         .pipe(csvParser())
         .on('data', (data) => {
             // Process each row/entry from the CSV file here
-            new cloudflare.WorkersKv(data.Date, {
+            new cloudflare.WorkersKv(data.Id, {
                 accountId: aId,
                 namespaceId: nsId,
                 key: data.Id,
@@ -23,4 +25,13 @@ export function populateWorkersKv(nsId: pulumi.Output<string>, aId: string) {
         .on('error', (error) => {
             console.error('Error reading CSV file:', error);
         });
+
+    if (count > 0) {
+        new cloudflare.WorkersKv("count", {
+            accountId: aId,
+            namespaceId: nsId,
+            key: "count",
+            value: count.toString(),
+        });
+    }
 }

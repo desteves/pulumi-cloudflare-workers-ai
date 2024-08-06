@@ -16,7 +16,10 @@ import { Request, ExecutionContext, Element } from '@cloudflare/workers-types';
 export interface Env {
 	// If you set another name in wrangler.toml as the value for 'binding',
 	// replace "AI" with the variable name you defined.
-	AI: any;
+	// AI: any;
+  
+  UNIVERSAL_AI_GATEWAY: any;
+
 }
 
 // This is the entry point for the Worker script
@@ -24,13 +27,14 @@ export default {
 	// The fetch event handler for the Worker script
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 
+    // TODO - get from request
 		const quote = "";
 
 		///////////////////////////////////////////////////////////////////////
 		// Run the AI model via Universal Endpoint
     // https://developers.cloudflare.com/ai-gateway/providers/universal/
 		///////////////////////////////////////////////////////////////////////
-		const result = await env.AI.run("@cf/bytedance/stable-diffusion-xl-lightning", {
+		const result = await env.UNIVERSAL_AI_GATEWAY.run("@cf/bytedance/stable-diffusion-xl-lightning", {
 			// @ts-ignore
 			prompt: quote
 		}).then((stream) =>

@@ -1,96 +1,84 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as cloudflare from "@pulumi/cloudflare";
-import { populateWorkersKv } from './populate';
-import { WranglerConfig } from '../../RECYCLE_BIN/wranglerConfig';
+import { populateDatabase } from './populate';
 import * as fs from "fs";
 
 ///////////////////////////////////////////////////////////////////////////////
-// Step 0 - Define Constants
+// Step 0 - Define constants + check for required configs
 const APPNAME = "quote";
-const DEMOFLAG = "";
+const DEMOFLAG = pulumi.getStack() != "prod" ? "-demo" : "";
 const resourceName = APPNAME + DEMOFLAG;
 
-///////////////////////////////////////////////////////////////////////////////
-// Step 1 Check environment variables
 const config = new pulumi.Config();
 const accountId = config.require("accountId");
 const zoneId = config.require("zoneId");
 const domain = config.require("domain");
-
-// RUN pulumi up -y
+// [Optional] RUN `pulumi up -y`
 // (No infra just yet, but it will check the environment variables are set up correctly.)
 
+
 ///////////////////////////////////////////////////////////////////////////////
-// Step 2 -  Add Key Value Namespace resource
+// Step 1  - Create all the database-related Cloudflare resources
+// Step 1a - Add Key Value Namespace Cloudflare resource
 const namespace = new cloudflare.WorkersKvNamespace(resourceName, {
   accountId: accountId,
   title: resourceName,
 });
 
-///////////////////////////////////////////////////////////////////////////////
-// Step 3 - Populate the Key Value Namespace resource with prod data, 2k+ entries
-populateWorkersKv(namespace.id, accountId)
-// RUN npm install fs   
-// RUN npm install csv-parser 
-// RUN pulumi up -y
+// Step 1b - Populate the Key Value Namespace resource with prod data, 2k+ entries
+populateDatabase(namespace.id, accountId)
+// RUN npm install fs csv-parser 
+// [Optional] RUN pulumi up -y
 // [Optional] OPEN https://dash.cloudflare.com
 
-///////////////////////////////////////////////////////////////////////////////
-// Step 4 - Create the Worker that will acess the KV Namespace
+// Step 1c - Create the Worker that will acess the KV Namespace
 const databaseWorker = new cloudflare.WorkerScript(resourceName + "-db", {
   name: resourceName,
   accountId: accountId,
-  content: fs.readFileSync("./app-prod/database.ts", "utf8"),
+  content: fs.readFileSync("../app-prod/database.ts", "utf8"),
   kvNamespaceBindings: [{
     name: "KV", /// <- super duper important!!!
     namespaceId: namespace.id,
   }],
 });
+// [Optional] RUN pulumi up -y
 
 ///////////////////////////////////////////////////////////////////////////////
-// Step 5 - Create the Worker that will perform the AI feature
-const worker = new WranglerConfig(resourceName, {
-  name: resourceName,
-  kvId: namespace.id,
-  accountId: accountId,
-});
-
-const script = cloudflare.WorkerScript.get(resourceName, accountId + "/" + resourceName)
-
-const aiWorker = new cloudflare.WorkerScript(resourceName + "-ai", {
-  name: resourceName,
-  accountId: accountId,
-  content: fs.readFileSync("./app-prod/ai.ts", "utf8"),
-  serviceBindings: [{
-    name: databaseWorker.name,
-    service: databaseWorker.name
-  }],
-
-});
-
-///////////////////////////////////////////////////////////////////////////////
-// Step 6 - Create the Worker that will render the HTML front-end
-const frontEndWorker = new cloudflare.WorkerScript(resourceName + "-fe", {
-  name: resourceName,
-  accountId: accountId,
-  content: fs.readFileSync("./app-prod/frontend.ts", "utf8"),
-  serviceBindings: [{
-    name: aiWorker.name,
-    service: aiWorker.name
-  }],
-});
-
+// Step 2 - Create the Cloudflare resources for the AI feature
+// const aiWorker = new cloudflare.WorkerScript(resourceName + "-ai", {
+//   name: resourceName,
+//   accountId: accountId,
+//   content: fs.readFileSync("../app-prod/ai.ts", "utf8"),
+//   serviceBindings: [{
+//     name: databaseWorker.name,
+//     service: databaseWorker.name
+//   }],
+//   plainTextBindings: [{
+//     name: "AI_MODEL_ENDPOINT",
+//     text: "namespace.id",
+//   }],
+//   secretTextBindings: [{
+//     name: "AI_MODEL_SECRET",
+//     text: config.require("AI_MODEL_SECRET"),
+//   }],
+// });
+// [Optional] RUN pulumi up -y
 
 ///////////////////////////////////////////////////////////////////////////////
-// Step 7 - Create the Worker Route
-
-
-
-///////////////////////////////////////////////////////////////////////////////
-// Step 5 -  Create the Wrangler config file for the Worker Script
-// https://developers.cloudflare.com/workers/wrangler/configuration/#source-of-truth
-
-
-
-// Step 8 - Export the URL as an Output
-export const url = pulumi.interpolate`https://${script.name}.${domain}`
+// Step 3 - Create the Cloudflare resources for the front-end
+// Step 3a - Add Key Value Namespace Cloudflare resource
+// const frontEndWorker = new cloudflare.WorkerScript(resourceName + "-fe", {
+//   name: resourceName,
+//   accountId: accountId,
+//   content: fs.readFileSync("../app-prod/frontend.ts", "utf8"),
+//   serviceBindings: [{
+//     name: aiWorker.name,
+//     service: aiWorker.name
+//   }],
+// });
+// Step 3b - Create the Worker Route
+// TODO
+// Step 3c - Export the URL as an Output for convenience
+// export const url = pulumi.interpolate`https://${script.name}.${domain}`
+// RUN pulumi up -y 
+// 

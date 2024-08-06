@@ -1,4 +1,6 @@
-// 
+/**
+ * @fileoverview Selects a random KV entry from the KV Namespace and returns it as a text response.
+ * */
 
 // @ts-ignore
 import { KVNamespace, Request, ExecutionContext } from '@cloudflare/workers-types';
@@ -17,7 +19,7 @@ export default {
     ///////////////////////////////////////////////////////////////////////
     const defaultQuote = "What's a purple platypus's favorite ride? An orange cloud, of course!";
     const count = env?.KV ? await env.KV.get("count") ?? "0" : "0";
-    const key = (Math.floor(Math.random() * parseInt(count)) + 1).toString();
+    const key = (Math.floor(Math.random() * parseInt(count) - 1 ) + 2).toString();
     const quote = env?.KV ? await env.KV.get(key) ?? defaultQuote : defaultQuote
 
     return new Response(quote, {
@@ -28,6 +30,5 @@ export default {
         'Expires': new Date().toUTCString()
       },
     });
-
   },
 };
