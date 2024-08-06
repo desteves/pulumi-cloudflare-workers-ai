@@ -89,7 +89,7 @@ export default {
 </head>
 
 <body>
-    <h1> Serverless AI on Cloudflare Workers AI deployed with Pulumi </h1>
+    <h1> Cloudflare Workers AI deployed with Pulumi </h1>
     <div class="image-container">
         <img class="overlay-image" src="https://i.imgur.com/CypWQYk.jpg" alt="Marguee Sign">
         <img id="base-image" class="base-image" src="${dataUrl}" alt="AI Image">
