@@ -1,4 +1,4 @@
-# Cloudflare Workers AI Demo
+# Cloudflare Workers AI deployed with Pulumi
 
 The app displays a random quote and a text-to-image AI background representative of such.
 
@@ -6,36 +6,36 @@ The app displays a random quote and a text-to-image AI background representative
 
 ## Overview
 
-- [App code](./app/)
-- [Infra code](./infra/)
+- [App Dev code  -- Single Worker](./app/)
+- [App Prod code -- Multiple Workers](./app=prod/)
+- [Infra Test+Prod code](./infra/)
 
 ## Pre-reqs
 
-### Local development
+- npm
+- Pulumi CLI
+- Wrangler
+- Pulumi Cloud account
+- Cloudflare account with a Zone configured.
 
-- Use the Wrangler CLI via Makefile
+### Local development (Wrangler)
 
-```bash
-cd app
-npx wrangler kv:namespace create "KV" 
-#  ensure to update wrangler.toml
+- Use the Wrangler CLI to test the Worker
 
-# KV_NS_ID=$( npx wrangler kv:namespace list  |  jq '.[] | select(.title == "kv-wrangler") | .id' -r )
-KV_NS_ID=3dfdfc3f927c4698a3fbac85363eb419
-npx wrangler kv:key put '1' 'one I uno un' --namespace-id="${KV_NS_ID}"
-npx wrangler kv:key put '2' 'two II dos deux' --namespace-id="${KV_NS_ID}"
-npx wrangler kv:key put '3' 'three III tres trois' --namespace-id="${KV_NS_ID}"
-npx wrangler kv:key put 'count' '3' --namespace-id="${KV_NS_ID}"
+### Testing (Pulumi)
 
+- Using the `test` Pulumi stack to incrementally add the Cloudflare Resources.
+- Uses a sample size for the data
+- Adds a `DEMO` flag to the Cloudflare resources
+- Triggered manually via `pulumi up` commands
+- Stores all secrets + config in Pulumi ESC
+- Running under [`quote-demo.atxyall.com`](https://quote-demo.atxyall.com/)
 
-# TODO
-```
+### Production (GitHub Actions + Pulumi)
 
-### E2E Testing && Production
-
-#### Infra code
-
-- Use Pulumi and CI/CD to adhere to GitOps best practices
-
-```bash
-```
+- Uses GitHub Actions
+  - preview prod on GitHub commit to a PR against main
+  - update prod on GitHub merge to the main branch
+- Uses GitHub OIDC to auth against Pulumi Cloud
+- Uses the full prod size data, 2400+ CSV Entries
+- Running under [`quote.atxyall.com`](https://quote.atxyall.com/)
