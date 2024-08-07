@@ -1,4 +1,34 @@
-<!DOCTYPE html>
+/**
+ * @fileoverview Renders the HTML for the Serverless App's frontend.
+ * */
+
+// This is the entry point for the Worker script
+export default {
+  // The fetch event handler for the Worker script
+  async fetch(request, env, ctx) {
+
+    const quote = await env.WORKER_DB_SERVICE.fetch(request).then((response) => response.text());
+
+    const url = new URL(request.url);
+    url.pathname = "/ai/"
+    url.searchParams.set('prompt', encodeURIComponent(quote));
+    // Create a new Request object with the modified URL
+    const modifiedRequest = new Request(url.toString(), {
+      method: request.method,
+      headers: request.headers,
+      redirect: 'follow'
+    });
+    const response = await env.WORKER_AI_SERVICE.fetch(modifiedRequest);
+    const arrayBuffer = await response.arrayBuffer();
+    // Convert ArrayBuffer to base64 string
+    const base64String = btoa(
+      new Uint8Array(arrayBuffer)
+        .reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+
+    // Create a data URL
+    const dataUrl = `data:${response.headers.get('content-type')};base64,${base64String}`;
+    const html = `<!DOCTYPE html>
 <html>
 
 <head>
@@ -62,8 +92,16 @@
     <h1> Cloudflare Workers AI deployed with Pulumi </h1>
     <div class="image-container">
         <img class="overlay-image" src="https://i.imgur.com/CypWQYk.jpg" alt="Marguee Sign">
-        <img id="base-image" class="base-image" src="" alt="AI Image">
+        <img id="base-image" class="base-image" src="${dataUrl}" alt="AI Image">
+        <p class='overlay-text'>${quote}</p>
     </div>
 </body>
+</html>`;
 
-</html>
+    return new Response(html, {
+      headers: {
+        "content-type": "text/html;charset=UTF-8",
+      },
+    });
+  },
+};

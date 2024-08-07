@@ -31,7 +31,7 @@ export default {
 		///////////////////////////////////////////////////////////////////////
 		const defaultQuote = "What's a purple platypus's favorite ride? An orange cloud, of course!";
 		const count = env?.KV ? await env.KV.get("count") ?? "0" : "0";
-		const key = (Math.floor(Math.random() * parseInt(count)) + 1).toString();
+		const key = (Math.floor(Math.random() * parseInt(count) - 1 ) + 2).toString();
 		const quote = env?.KV ? await env.KV.get(key) ?? defaultQuote : defaultQuote
 
 

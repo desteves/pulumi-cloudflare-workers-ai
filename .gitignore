@@ -1,4 +1,3 @@
-**el**.csv
 **node_modules
 **dist
 **.wrangler
@@ -6,4 +5,3 @@ RECYCLE_BIN
 **/**.log
 app/deploy.log
 **/bin
-data/prod.csv
