@@ -6,7 +6,10 @@ import csvParser from 'csv-parser';
 // Yes, if the CSV file changes, 
 // on the next pulumi up, 
 // the Workers KV will be updated accordingly
-const csv = (pulumi.getStack() === "prod") ? '../data/prod.csv' : '../data/sample.csv';
+// const csv = (pulumi.getStack() === "prod") ? '../data/prod.csv' : '../data/sample.csv';
+
+// using the smaller dataset for long-term costs savings
+const csv = '../data/sample.csv';
 
 let count = 0;
 export function populateDatabase(nsId: pulumi.Output<string>, aId: string) {
